@@ -4,15 +4,7 @@ This repository contains Python scripts for model-based fault diagnosis using Fi
 
 Project Structure
 
-plaintext
-Copy code
-/
-├── src/                    # Directory for source code
-    ├── main.py             # Main script to run simulations
-├── tests/                  # Test files for running simulations
-├── mutants.txt             # Output file containing unique mutants
-├── README.md               # Documentation for using this repository
-Setup
+
 
 To run the scripts, you will need Python 3.6 or higher. Clone this repository to your local machine:
 
