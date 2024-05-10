@@ -34,7 +34,7 @@ Modifying the Code
 
 If you need to adjust the simulation or mutation logic:
 
-Navigate to src/ and modify main.py as per your requirements.
+
 You can increase or decrease the number of mutants generated or change the mutation logic within the generate_mutants function.
 Contributing
 
