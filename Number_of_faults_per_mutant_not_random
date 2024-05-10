@@ -1,0 +1,68 @@
+import random
+import copy
+
+def parse_fsm_config(filepath):
+    """ Parses FSM configuration from a file. """
+    fsm_config = {'transitions': []}
+    with open(filepath, 'r') as file:
+        for line in file:
+            parts = line.strip().split()
+            if len(parts) == 2 and parts[0] != 'F':
+                fsm_config[parts[0]] = int(parts[1])
+            elif len(parts) == 4:
+                fsm_config['transitions'].append((int(parts[0]), int(parts[1]), int(parts[2]), int(parts[3])))
+    return fsm_config
+
+def generate_mutants(fsm_config, num_mutants, max_mutations_per_mutant):
+    """ Generates mutants of the FSM by introducing a random number of faults per mutant, up to a maximum. """
+    mutants = []
+    states = list(set([t[2] for t in fsm_config['transitions']]))
+    outputs = list(set([t[3] for t in fsm_config['transitions']]))
+
+    for i in range(num_mutants):
+        mutant = copy.deepcopy(fsm_config)
+        num_mutations = random.randint(1, max_mutations_per_mutant)  # Random number of faults
+        mutations = random.sample(mutant['transitions'], num_mutations)
+        
+        for mutation in mutations:
+            index = mutant['transitions'].index(mutation)
+            mutation_type = random.choice(['state', 'output'])
+
+            if mutation_type == 'state':
+                possible_states = [s for s in states if s != mutation[2]]
+                if possible_states:
+                    new_state = random.choice(possible_states)
+                    print(f"Mutant {i+1}, Fault {mutations.index(mutation)+1}: Transition {mutation} - Changed state from {mutation[2]} to {new_state}")
+                    mutation = (mutation[0], mutation[1], new_state, mutation[3])
+            else:
+                possible_outputs = [o for o in outputs if o != mutation[3]]
+                if possible_outputs:
+                    new_output = random.choice(possible_outputs)
+                    print(f"Mutant {i+1}, Fault {mutations.index(mutation)+1}: Transition {mutation} - Changed output from {mutation[3]} to {new_output}")
+                    mutation = (mutation[0], mutation[1], mutation[2], new_output)
+
+            mutant['transitions'][index] = mutation
+        mutants.append(mutant)
+
+    return mutants
+
+def save_mutants_to_file(mutants, filepath):
+    """ Saves mutants to a file in the specified FSM format. """
+    with open(filepath, 'w') as file:
+        for i, mutant in enumerate(mutants, start=1):
+            file.write(f"Mutant {i}:\nF 0\n")
+            file.write(f"s {mutant['s']}\n")
+            file.write(f"i {mutant['i']}\n")
+            file.write(f"o {mutant['o']}\n")
+            file.write(f"n0 {mutant['n0']}\n")
+            file.write(f"p {len(mutant['transitions'])}\n")
+            for transition in mutant['transitions']:
+                file.write(f"{transition[0]} {transition[1]} {transition[2]} {transition[3]}\n")
+            file.write("\n")
+
+# Example use
+fsm_config = parse_fsm_config('C:\\Users\\youse\\OneDrive - aus.edu\\Desktop\\Software Testing Project\\Machines\\CD_reduced_fsm.txt')  # Provide the correct path
+num_mutants = 1000  # Number of mutants to generate
+max_mutations_per_mutant = 3  # Maximum number of faults per mutant
+mutants = generate_mutants(fsm_config, num_mutants, max_mutations_per_mutant)
+save_mutants_to_file(mutants, 'mutants.txt')  # Save the mutants to a text file
