@@ -38,4 +38,7 @@ If you need to adjust the simulation or mutation logic:
 You can increase or decrease the number of mutants generated or change the mutation logic within the generate_mutants function.
 Contributing
 
-Feel free to fork this repository and submit pull requests. You can also open an issue if you find any bugs or have suggestions for further enhancements.
+the first code block generates mutants up to N faults you can use the file called Number_of_faults_per_mutant_not_random to specify the number of faults you want per mutant. 
+the second code block just shows the number of unqiue mutants on a perticular test suite
+the third code block runs all the test suites on the mutants and stores the unique mutants in a txt file
+the last code block outputs the result of unique mutants as a bar graph for easy visualization
